@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en" class="theme-dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#05060a" />
+
+  <!-- ============================ SEO ============================ -->
+  <title>Chat With Your Main — Talk to your main champion</title>
+  <meta
+    name="description"
+    content="Search for your League of Legends summoner and start a conversation with your most played champion. Futuristic interface, glassmorphism and a chat with personality."
+  />
+  <meta name="author" content="Your Name" />
+  <meta property="og:title" content="Chat With Your Main" />
+  <meta
+    property="og:description"
+    content="Search your summoner and chat with your League of Legends main."
+  />
+  <meta property="og:type" content="website" />
+
+  <!-- =============== hreflang (SEO multi‑idioma) ================ -->
+  <link rel="alternate" hreflang="es" href="https://tudominio.com/es/" />
+  <link rel="alternate" hreflang="en" href="https://tudominio.com/" />
+  <link rel="canonical" href="https://tudominio.com/" />
+
+  <!-- ===================== Icons (Font Awesome) ===================== -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+  />
+
+  <!-- ===================== Fonts ===================== -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- ============================ Styles ============================ -->
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+
+<body>
+  <!-- ===================== VIDEO DE FONDO ===================== -->
+  <video class="bg-video" autoplay muted loop playsinline poster="Poster.png"
+       style="position:fixed; top:0; left:0; width:100%; height:100%; z-index:-3; object-fit:cover; pointer-events:none; visibility:visible; opacity:1;">
+  <source src="Background.mp4" type="video/mp4">
+</video>
+  <div class="bg-video-overlay" aria-hidden="true"></div>
+  <!-- ========================================================= -->
+
+  <!-- Animated neon background layers -->
+  <div class="bg-grid" aria-hidden="true"></div>
+  <div class="bg-orb bg-orb--cyan" aria-hidden="true"></div>
+  <div class="bg-orb bg-orb--magenta" aria-hidden="true"></div>
+  <div class="bg-noise" aria-hidden="true"></div>
+
+  <!-- ============================ Header ============================ -->
+  <header class="site-header glass">
+    <a class="brand" href="#top" aria-label="Chat With Your Main — home">
+      <span class="brand__mark">
+        <img src="Icon.png" >
+      </span>
+      <span class="brand__text">
+        Chat&nbsp;With&nbsp;Your&nbsp;<span class="brand__accent">Main</span>
+      </span>
+    </a>
+
+    <nav class="site-nav" aria-label="Author links">
+      <!-- Language switcher -->
+      <a class="site-nav__link" href="/es/" hreflang="es" aria-label="Versión en español">
+        <i class="fa-solid fa-language"></i><span>ES</span>
+      </a>
+      <!-- Personal branding -->
+      <a class="site-nav__link" href="https://andresrosalez.dev/" target="_blank" rel="noopener">
+        <i class="fa-solid fa-globe"></i><span>Portfolio</span>
+      </a>
+      <a class="site-nav__link" href="https://www.linkedin.com/in/andres-rosalez" target="_blank" rel="noopener">
+        <i class="fa-brands fa-linkedin"></i><span>LinkedIn</span>
+      </a>
+      <a class="site-nav__link" href="mailto:andeliros@yahoo.com.ar">
+        <i class="fa-solid fa-envelope"></i><span>Contact</span>
+      </a>
+    </nav>
+  </header>
+
+  <span id="top"></span>
+
+  <main class="layout">
+    <!-- ===================== Left ad rail ===================== -->
+    <aside class="ad-rail ad-rail--left" aria-label="Advertisement">
+      <div class="ad-slot ad-slot--vertical" data-ad-format="vertical">
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+             data-ad-slot="0000000000"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+        <span class="ad-slot__label">Ad</span>
+      </div>
+    </aside>
+
+    <!-- ============================ Content ============================ -->
+    <div class="content">
+      <!-- ====================================================== -->
+      <!-- VIEW 1: SEARCH                                          -->
+      <!-- ====================================================== -->
+      <section id="view-search" class="view view--active" aria-labelledby="hero-title">
+        <div class="hero">
+            <div class="hero-glass">
+          <p class="hero__eyebrow">
+            <i class="fa-solid fa-bolt"></i> Powered by your champion mastery
+          </p>
+          <h1 id="hero-title" class="hero__title">
+            Chat with your <br><span class="grad-text">MAIN</span>
+          </h1>
+          <p class="hero__subtitle">
+            Search for your summoner, choose among your most played champions,
+            and start a conversation. No secrets: just you and your main.
+          </p>
+
+          <form id="search-form" class="search glass" autocomplete="off" novalidate>
+            <div class="search__field">
+              <i class="fa-solid fa-magnifying-glass search__icon"></i>
+              <input
+                id="summoner-input"
+                class="search__input"
+                type="text"
+                name="summoner"
+                placeholder="Summoner name · e.g. Hide on bush"
+                aria-label="Summoner name"
+                required
+              />
+            </div>
+
+            <div class="search__region">
+              <label class="sr-only" for="region-select">Region</label>
+              <select id="region-select" class="search__select" name="region">
+                <option value="LAS">LAS</option>
+                <option value="LAN">LAN</option>
+                <option value="NA">NA</option>
+                <option value="EUW">EUW</option>
+                <option value="EUNE">EUNE</option>
+                <option value="KR">KR</option>
+                <option value="BR">BR</option>
+              </select>
+            </div>
+
+            <button id="search-button" class="btn btn--primary" type="submit">
+              <span class="btn__label">Search</span>
+              <i class="fa-solid fa-arrow-right btn__icon"></i>
+            </button>
+          </form>
+
+          <p id="search-message" class="search__feedback" role="status" aria-live="polite"></p>
+
+          <ul class="hero__hints">
+            <li><i class="fa-solid fa-circle-info"></i> Try any name — the backend is simulated.</li>
+          </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================== -->
+      <!-- VIEW 2: CHAMPION SELECT                                 -->
+      <!-- ====================================================== -->
+      <section id="view-select" class="view" aria-labelledby="select-title" hidden>
+        <header class="summoner-card glass" id="summoner-card">
+          <!-- Populated by ui.js -->
+        </header>
+
+        <div class="select__heading">
+          <h2 id="select-title" class="section-title">
+            Choose your <span class="grad-text">main</span>
+          </h2>
+          <p class="section-subtitle">
+            Your highest mastery champions. Tap one to start chatting.
+          </p>
+        </div>
+
+        <div id="champion-grid" class="champion-grid" role="list" aria-label="Available champions">
+          <!-- Champion cards injected by ui.js -->
+        </div>
+
+        <button class="btn btn--ghost back-link" data-action="back-to-search" type="button">
+          <i class="fa-solid fa-arrow-left"></i> Search another summoner
+        </button>
+      </section>
+
+      <!-- ====================================================== -->
+      <!-- VIEW 3: CHAT                                            -->
+      <!-- ====================================================== -->
+      <section id="view-chat" class="view" aria-labelledby="chat-title" hidden>
+        <div class="chat glass">
+          <header class="chat__header" id="chat-header">
+            <!-- Champion identity injected by ui.js -->
+          </header>
+
+          <div id="chat-log" class="chat__log" aria-live="polite" aria-label="Conversation">
+            <!-- Messages -->
+          </div>
+
+          <div id="typing-indicator" class="typing" hidden>
+            <span class="typing__dot"></span>
+            <span class="typing__dot"></span>
+            <span class="typing__dot"></span>
+          </div>
+
+          <form id="chat-form" class="chat__composer" autocomplete="off">
+            <input
+              id="chat-input"
+              class="chat__input"
+              type="text"
+              placeholder="Type a message…"
+              aria-label="Type a message"
+              required
+            />
+            <button class="btn btn--primary chat__send" type="submit" aria-label="Send message">
+              <i class="fa-solid fa-paper-plane"></i>
+            </button>
+          </form>
+        </div>
+
+        <button class="btn btn--ghost back-link" data-action="back-to-select" type="button">
+          <i class="fa-solid fa-arrow-left"></i> Switch champion
+        </button>
+      </section>
+
+      <!-- In-content ad -->
+      <div class="ad-slot ad-slot--horizontal" data-ad-format="horizontal" aria-label="Advertisement">
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+             data-ad-slot="1111111111"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+        <span class="ad-slot__label">Ad</span>
+      </div>
+    </div>
+
+    <!-- ===================== Right ad rail ===================== -->
+    <aside class="ad-rail ad-rail--right" aria-label="Advertisement">
+      <div class="ad-slot ad-slot--vertical" data-ad-format="vertical">
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+             data-ad-slot="2222222222"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+        <span class="ad-slot__label">Ad</span>
+      </div>
+    </aside>
+  </main>
+
+  <!-- ============================ Footer ============================ -->
+  <footer class="site-footer glass">
+    <div class="footer__support">
+      <p class="footer__support-text">
+        Enjoy the project? Support it and follow me:
+      </p>
+      <div class="footer__buttons">
+        <a class="btn btn--coffee" href="https://cafecito.app/andresrosalez" target="_blank" rel="noopener">
+          <i class="fa-solid fa-mug-hot"></i> Buy me a coffee
+        </a>
+      </div>
+    </div>
+
+    <div class="footer__meta">
+      <p>
+        Made by
+        <a href="https://andresrosalez.dev/" target="_blank" rel="noopener">Andres Rosalez</a>
+        · AI Backend Developer.
+      </p>
+      <p class="footer__legal">
+        Not affiliated with Riot Games. League of Legends © Riot Games, Inc.
+      </p>
+    </div>
+  </footer>
+
+  <!-- Google AdSense loader (commented out) -->
+  <!--
+  <script async
+    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX"
+    crossorigin="anonymous"></script>
+  -->
+
+  <script type="module" src="./js/app.js"></script>
+</body>
+</html>

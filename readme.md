@@ -1,149 +1,166 @@
-# ChatWithYourMain
+# Chat With Your Main
 
-Turn your **League of Legends** match history into a personalized AI coach that thinks, talks, and gives advice as your main champion.
+> Search your **League of Legends** summoner profile, discover your most-played champions, and chat with an AI version of your main.
 
-ChatWithYourMain analyzes your gameplay, identifies your playstyle, and creates a conversational experience powered by your real in-game performance.
-
-> What if your main champion could review your matches and coach you based on how you actually play?
+A futuristic experience built with **vanilla HTML, CSS, and JavaScript**, featuring glassmorphism, neon accents, smooth animations, and personalized AI interactions powered by real gameplay data.
 
 ---
 
-## Live Demo
+## ✨ Live Demo
 
-🔗 **Web App:** [Coming Soon](YOUR_APP_URL)
+🔗 **Web App:** `YOUR_APP_URL`
 
-🔗 **Open Source Backend:** [chatwithyourmain-backend](YOUR_BACKEND_REPOSITORY_URL)
-
----
-
-## Features
-
-* Automatic main champion detection
-* Match history analysis using the Riot Games API
-* Performance tracking across patches
-* Playstyle profiling based on real gameplay data
-* Personalized coaching insights
-* AI chat experience tailored to each player
-* Historical win rate analysis
-* Build and rune pattern detection
-* Performance trend visualization
+🔗 **Open Source Backend:** `YOUR_BACKEND_REPOSITORY_URL`
 
 ---
 
-## How It Works
+## ✦ How It Works
 
 ```text
-Riot ID → Match History → Player Analysis → Champion Profile → AI Chat
+Search Summoner → Analyze Match History → Detect Main Champion → Build Player Profile → AI Chat
 ```
 
-The platform processes player data to generate:
+1. **Search** — Enter your Riot ID and region.
+2. **Analyze** — The backend processes champion mastery, match history, and player statistics.
+3. **Select** — Choose your favorite champion or let the system detect your main automatically.
+4. **Chat** — Interact with an AI version of your champion, personalized with your gameplay habits.
 
-* Main champion
-* Preferred roles
-* Win rate trends
-* KDA and CS metrics
-* Vision and objective participation
-* Build preferences
-* Rune choices
-* Strengths and weaknesses
-* Playstyle tendencies
-
-This profile becomes the context for the AI conversation.
+> 💡 This frontend currently uses a simulated backend. Any summoner name works for demonstration purposes. Use `notfound` to test the error state.
 
 ---
 
-## Architecture
+## 🚀 Engineering Highlights
 
-```text
-Frontend
-    ↓
-API Gateway
-    ↓
-Open Source Backend
-    ├── Riot API Client
-    ├── Match Analyzer
-    ├── Player Profiler
-    └── AI Context Builder
-            ↓
-         LLM Provider
-```
-
----
-
-## Tech Stack
-
-### Frontend
-
-* HTML
-* CSS
-* JavaScript
-* Chart.js
-
-### Backend
-
-* Node.js
-* Express
-* PostgreSQL
-* Riot Games API
-
-### AI
-
-* LLM Provider
-* Prompt Engineering
-* Context Generation Pipeline
-
-### Infrastructure
-
-* Docker
-* Railway
-* Cloudflare
-
----
-
-## Engineering Challenges
-
-This project demonstrates experience with:
+This project showcases experience with:
 
 * Third-party API integrations
-* Data processing pipelines
+* Data analytics pipelines
 * AI-powered user experiences
 * Prompt engineering
 * Backend architecture design
-* Caching strategies
-* Database design
-* Data analytics
-* Rate limit management
+* State management without frameworks
+* Rate limit handling
+* Secure API proxying
 * Production deployment
+* Open source development
 
 ---
 
-## Open Source
+## 🗂️ Project Structure
 
-The analytics engine and Riot API integration are open source.
+```text
+.
+├── index.html
+├── assets/
+│   ├── css/
+│   │   └── styles.css
+│   └── js/
+│       ├── config.js
+│       ├── api.js
+│       ├── ui.js
+│       ├── app.js
+│       └── data/
+│           └── champions.js
+├── package.json
+└── README.md
+```
 
-🔗 Backend repository:
+### Architecture
 
-YOUR_BACKEND_REPOSITORY_URL
-
-Licensed under the GNU Affero General Public License v3.0 (AGPLv3).
+| Layer      | File                | Responsibility                            |
+| ---------- | ------------------- | ----------------------------------------- |
+| Data       | `data/champions.js` | Champion personalities and metadata       |
+| Service    | `api.js`            | API communication layer                   |
+| View       | `ui.js`             | DOM rendering                             |
+| Controller | `app.js`            | Application state and event orchestration |
 
 ---
 
-## Support the Project
+## 🔧 Local Development
 
-Running AI-powered services is expensive. If you enjoy the project and want to help keep it online, consider supporting it:
+No build step required.
 
-❤️ Patreon: YOUR_PATREON_URL
+Using Node.js:
 
-☕ Cafecito: YOUR_CAFECITO_URL
+```bash
+npm install
+npm run dev
+```
+
+Or using Python:
+
+```bash
+python3 -m http.server 3000
+```
+
+Open:
+
+```text
+http://localhost:3000
+```
 
 ---
 
-## Need an AI Assistant for Your Business?
+## 🔌 Connecting the Real Backend
 
-This project is built by **Artem AI**.
+All backend interactions are isolated in:
 
-We develop:
+```text
+assets/js/api.js
+```
+
+Replace the simulated methods with real endpoints.
+
+| Function            | Real Integration              |
+| ------------------- | ----------------------------- |
+| `searchSummoner()`  | Riot Account-V1 + Summoner-V4 |
+| `getTopChampions()` | Champion-Mastery-V4           |
+| `getMatchHistory()` | Match-V5                      |
+| `sendMessage()`     | Your LLM provider             |
+
+> ⚠️ Never expose your `RIOT_API_KEY` or LLM credentials in the browser.
+
+All requests must be proxied through your own backend.
+
+Champion assets are loaded directly from Riot's Data Dragon CDN.
+
+---
+
+## 🧠 Backend
+
+The analytics engine and Riot API integration live in a dedicated open source repository:
+
+🔗 `YOUR_BACKEND_REPOSITORY_URL`
+
+The backend is responsible for:
+
+* Riot API integration
+* Match processing
+* Main champion detection
+* Historical win rate analysis
+* Player profiling
+* AI context generation
+* Caching and rate limit management
+
+---
+
+## 💸 Support the Project
+
+Running AI-powered applications is not cheap. Tokens have the remarkable ability to disappear faster than LP after a losing streak.
+
+If you enjoy the project, consider supporting its development:
+
+❤️ Patreon: `YOUR_PATREON_URL`
+
+☕ Cafecito: `YOUR_CAFECITO_URL`
+
+---
+
+## 🤖 Need AI for Your Business?
+
+Built by **Artem AI**.
+
+We create:
 
 * AI chatbots
 * AI agents
@@ -151,17 +168,19 @@ We develop:
 * Business process automation
 * Custom AI integrations
 
-📧 Contact: [andeliros@yahoo.com.ar](mailto:andeliros@yahoo.com.ar)
+📧 Email: `andeliros@yahoo.com.ar`
 
-🌐 Website: YOUR_WEBSITE_URL
+🌐 Website: `YOUR_WEBSITE_URL`
 
-💼 Portfolio: YOUR_PORTFOLIO_URL
+💼 Portfolio: `YOUR_PORTFOLIO_URL`
+
+💬 LinkedIn: `YOUR_LINKEDIN_URL`
 
 ---
 
-## Riot Games Disclaimer
+## ⚖️ Riot Games Disclaimer
 
-ChatWithYourMain is not endorsed by Riot Games and does not reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties.
+Chat With Your Main is not endorsed by Riot Games and does not reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties.
 
 League of Legends and Riot Games are trademarks or registered trademarks of Riot Games, Inc.
 
@@ -169,16 +188,20 @@ This project uses the Riot Games API in compliance with Riot Developer Policies.
 
 ---
 
-## Trademark Notice
+## ™️ Trademark Notice
 
-The source code is licensed under AGPLv3.
+The source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
 
 The names, logos, branding, visual assets, and identity associated with **Artem AI** are not included under this license and may not be used without explicit written permission.
 
 ---
 
-## License
+## 📄 License
 
-Licensed under the GNU Affero General Public License v3.0.
+This project is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
 
-See the [LICENSE](LICENSE) file for details.
+Commercial use is permitted under the terms of the license.
+
+If you deploy a modified version of this software as a network service, you must make the corresponding source code available to users.
+
+See the [`LICENSE`](./LICENSE) file for details.
