@@ -230,39 +230,26 @@ function mockReply(champion, message, history) {
 }
 
 
-// ============================================================
-// PRUEBA DE CONEXIÓN AL BACKEND (health check)
-// ============================================================
-async function testBackendHealth() {
-  try {
-    const response = await fetch('/api/health');
-    if (response.ok) {
-      const data = await response.json();
-      console.log('✅ Backend conectado:', data);
-      // Opcional: mostrar un mensaje en la UI
-      const msg = document.getElementById('search-message');
-      if (msg) {
-        msg.textContent = '✅ Backend online';
-        msg.className = 'search__feedback search__feedback--info';
-        setTimeout(() => { msg.textContent = ''; msg.className = 'search__feedback'; }, 3000);
-      }
-    } else {
-      console.warn('⚠️ Backend no responde (status:', response.status, ')');
-    }
-  } catch (error) {
-    console.error('❌ Error al conectar con el backend:', error);
-    // Opcional: mostrar error en UI
-    const msg = document.getElementById('search-message');
-    if (msg) {
-      msg.textContent = '❌ No se pudo conectar al servidor';
-      msg.className = 'search__feedback search__feedback--error';
-    }
+function getServerUrl() {
+  const url = window.ServerAPI || '';
+  if (!url) {
+    console.warn('⚠️ ServerAPI no definida en window. Revisa que el placeholder se reemplace en el build.');
   }
+  return url;
 }
 
-// Dentro de la función init(), añade:
-function init() {
-  // ... tu código existente ...
-  // Al final:
-  testBackendHealth();
+/**
+ * Verifica el estado del backend llamando al endpoint /health.
+ * @returns {Promise<{status: string}>}
+ */
+export async function checkHealth() {
+  const baseUrl = getServerUrl();
+  if (!baseUrl) {
+    throw new Error('ServerAPI no configurada.');
+  }
+  const response = await fetch(`${baseUrl}/health`);
+  if (!response.ok) {
+    throw new Error(`Health check falló: ${response.status}`);
+  }
+  return response.json();
 }
