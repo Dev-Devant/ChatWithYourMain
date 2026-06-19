@@ -230,24 +230,39 @@ function mockReply(champion, message, history) {
 }
 
 
-// Prueba de conexión al backend (health check)
-async function testBackend() {
+// ============================================================
+// PRUEBA DE CONEXIÓN AL BACKEND (health check)
+// ============================================================
+async function testBackendHealth() {
   try {
     const response = await fetch('/api/health');
     if (response.ok) {
       const data = await response.json();
       console.log('✅ Backend conectado:', data);
+      // Opcional: mostrar un mensaje en la UI
+      const msg = document.getElementById('search-message');
+      if (msg) {
+        msg.textContent = '✅ Backend online';
+        msg.className = 'search__feedback search__feedback--info';
+        setTimeout(() => { msg.textContent = ''; msg.className = 'search__feedback'; }, 3000);
+      }
     } else {
-      console.warn('⚠️ Backend no responde:', response.status);
+      console.warn('⚠️ Backend no responde (status:', response.status, ')');
     }
   } catch (error) {
-    console.error('❌ Error conectando al backend:', error);
+    console.error('❌ Error al conectar con el backend:', error);
+    // Opcional: mostrar error en UI
+    const msg = document.getElementById('search-message');
+    if (msg) {
+      msg.textContent = '❌ No se pudo conectar al servidor';
+      msg.className = 'search__feedback search__feedback--error';
+    }
   }
 }
 
-// Llama a la prueba al iniciar la app (dentro de init o al final)
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', testBackend);
-} else {
-  testBackend();
+// Dentro de la función init(), añade:
+function init() {
+  // ... tu código existente ...
+  // Al final:
+  testBackendHealth();
 }
