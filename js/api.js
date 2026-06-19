@@ -228,3 +228,26 @@ function mockReply(champion, message, history) {
   }
   return sample([...champion.lines, ...champion.fallbacks]);
 }
+
+
+// Prueba de conexión al backend (health check)
+async function testBackend() {
+  try {
+    const response = await fetch('/api/health');
+    if (response.ok) {
+      const data = await response.json();
+      console.log('✅ Backend conectado:', data);
+    } else {
+      console.warn('⚠️ Backend no responde:', response.status);
+    }
+  } catch (error) {
+    console.error('❌ Error conectando al backend:', error);
+  }
+}
+
+// Llama a la prueba al iniciar la app (dentro de init o al final)
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', testBackend);
+} else {
+  testBackend();
+}
