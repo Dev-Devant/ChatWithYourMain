@@ -1,19 +1,10 @@
 /**
- * api.js — SIMULATED BACKEND
+ * api.js — REAL BACKEND (Riot via FastAPI) + chat simulado
  * ==========================================================================
- * Every function here MOCKS a server call. The signatures and return shapes
- * are intentionally close to what a real implementation would look like, so
- * swapping the internals for actual `fetch()` calls is a drop-in change.
- *
- * WHERE THE REAL WORK GOES (your TODO list):
- *   1. searchSummoner()  -> Riot Account-V1 + Summoner-V4 endpoints.
- *   2. getTopChampions() -> Riot Champion-Mastery-V4 endpoint.
- *   3. sendMessage()     -> your LLM endpoint (OpenAI, AI SDK, etc.) seeded
- *                           with the champion persona from champions.js.
- *
- * Riot calls MUST be proxied through a server you control — never expose your
- * RIOT_API_KEY in the browser. The mock keeps everything client-side on
- * purpose so the demo runs with zero configuration.
+ * searchSummoner()   -> POST {baseUrl}/api/summoner  (Riot real, vía tu backend)
+ * getTopChampions()  -> usa el array topChampions que ya viene en la respuesta
+ *                        de /api/summoner, enriquecido con persona local.
+ * sendMessage()      -> sigue simulado hasta que conectes tu endpoint de IA.
  * ==========================================================================
  */
 
@@ -24,180 +15,203 @@ import { CHAMPIONS, getChampionById } from "./data/champions.js";
 /* Internal helpers                                                           */
 /* -------------------------------------------------------------------------- */
 
-/** Resolve after a randomized, human-feeling delay to mimic network latency. */
 function fakeDelay() {
   const { min, max } = CONFIG.FAKE_LATENCY;
   const ms = Math.round(min + Math.random() * (max - min));
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-/** Deterministic pseudo-random integer from a string seed (stable per name). */
-function seededInt(seed, max) {
-  let hash = 0;
-  for (let i = 0; i < seed.length; i++) {
-    hash = (hash << 5) - hash + seed.charCodeAt(i);
-    hash |= 0; // force 32-bit
-  }
-  return Math.abs(hash) % max;
-}
-
-/** Pick a random element from an array. */
 function sample(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-const RANKS = [
-  "Hierro", "Bronce", "Plata", "Oro", "Platino",
-  "Esmeralda", "Diamante", "Maestro", "Gran Maestro", "Retador",
-];
-
-/* -------------------------------------------------------------------------- */
-/* 1. Summoner lookup                                                         */
-/* -------------------------------------------------------------------------- */
+function getServerUrl() {
+  const url = "https://chatwithyourmainbackend-production.up.railway.app";
+  if (!url) {
+    console.warn("⚠️ ServerAPI no definida en window. Revisa el placeholder del build.");
+  }
+  return url;
+}
 
 /**
- * Look up a summoner by name + region.
- *
- * @param {string} name   - Summoner / Riot ID game name.
- * @param {string} region - Platform routing value (LAN, NA, EUW, …).
- * @returns {Promise<{
- *   name: string, region: string, level: number, iconId: number,
- *   rank: string, lp: number
- * }>}
- * @throws {Error} when the summoner "doesn't exist" (type the word "notfound").
- *
- * TODO(real): fetch(`/api/summoner?name=${name}&region=${region}`) which on the
- * server calls Riot Account-V1 (by-riot-id) then Summoner-V4 (by-puuid).
+ * Devuelve la persona de champions.js si existe, o una genérica si el
+ * campeón con más maestría del invocador no está en nuestra lista de 9.
+ * @param {string} id - Data Dragon key, ej "Garen".
  */
-export async function searchSummoner(name, region) {
-  await fakeDelay();
+export function getChampionOrGeneric(id) {
+  const champ = getChampionById(id);
+  if (champ) return champ;
 
-  const clean = name.trim();
-  if (!clean) {
-    throw new Error("Escribe un nombre de invocador.");
-  }
-
-  // Simulate a "not found" path so the UI can show error states.
-  if (clean.toLowerCase() === "notfound") {
-    throw new Error(`No encontramos a "${clean}" en ${region}. ¿Revisaste la región?`);
-  }
-
-  const seed = `${clean}-${region}`;
   return {
-    name: clean,
-    region,
-    level: 30 + seededInt(seed, 970), // 30 – 999
-    iconId: 1 + seededInt(seed + "icon", 28), // Data Dragon has icons 0..N
-    rank: RANKS[seededInt(seed + "rank", RANKS.length)],
-    lp: seededInt(seed + "lp", 100),
+    id,
+    name: id,
+    title: "Campeón de la Grieta",
+    role: "Desconocido",
+    accent: "#36d1dc",
+    persona: "Un campeón de League of Legends con personalidad propia, todavía sin guion detallado.",
+    greetings: [
+      `¡Hola! Soy ${id}. ¿En qué te puedo ayudar?`,
+      `Hola, invocador. Listo para charlar.`,
+    ],
+    lines: [
+      "Cada partida es una nueva oportunidad.",
+      "La Grieta no perdona errores.",
+      "Sigamos jugando, no hay tiempo que perder.",
+    ],
+    fallbacks: ["Interesante.", "Cuéntame más."],
   };
 }
 
 /* -------------------------------------------------------------------------- */
-/* 2. Champion mastery                                                        */
+/* 1. Summoner lookup (REAL)                                                  */
 /* -------------------------------------------------------------------------- */
 
 /**
- * Return the summoner's most-played champions, highest mastery first.
+ * Busca un Riot ID completo ("Nombre#TAG") contra tu backend, que a su vez
+ * llama Account-V1 + Summoner-V4 + Champion-Mastery-V4.
  *
- * @param {{ name: string, region: string }} summoner
- * @returns {Promise<Array<{
- *   id: string, name: string, title: string, role: string, accent: string,
- *   masteryLevel: number, masteryPoints: number
- * }>>}
+ * @param {string} riotId - ej "Hide on bush#KR1"
+ * @param {string} region - LAN, LAS, NA, EUW, EUNE, KR, BR
+ */
+export async function searchSummoner(riotId, region) {
+  const clean = riotId.trim();
+
+  if (!clean) {
+    throw new Error("Escribe tu Riot ID completo.");
+  }
+  if (!clean.includes("#")) {
+    throw new Error('Usa el formato "Nombre#TAG" (tu Riot ID completo, ej. Hide on bush#KR1).');
+  }
+
+  const baseUrl = getServerUrl();
+  if (!baseUrl) {
+    throw new Error("El backend no está configurado (ServerAPI).");
+  }
+
+  let response;
+  try {
+    response = await fetch(`${baseUrl}/api/summoner`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ summoner_name: clean, region }),
+    });
+  } catch (networkError) {
+    throw new Error("No se pudo conectar con el servidor. Intenta de nuevo.");
+  }
+
+  if (!response.ok) {
+    let detail = `Error ${response.status}`;
+    try {
+      const body = await response.json();
+      if (body?.detail) detail = body.detail;
+    } catch {
+      /* respuesta sin JSON, nos quedamos con el status */
+    }
+    throw new Error(detail);
+  }
+
+  const data = await response.json();
+
+  return {
+    name: data.name,
+    tagLine: data.tagLine,
+    region: data.region || region,
+    level: data.level,
+    iconId: data.iconId,
+    puuid: data.puuid,
+    // El backend real no devuelve rank/LP (eso era simulado). Dejamos
+    // placeholders neutros para no romper renderSummonerCard().
+    rank: "—",
+    lp: 0,
+    topChampions: data.topChampions || [],
+  };
+}
+
+/* -------------------------------------------------------------------------- */
+/* 2. Champion mastery (REAL, ya viene en searchSummoner)                    */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * No vuelve a llamar al backend: toma el `topChampions` que ya trajo
+ * searchSummoner() y lo enriquece con la persona local (o una genérica).
  *
- * TODO(real): call Champion-Mastery-V4 (top by puuid), then map Riot's
- * numeric championId to Data Dragon keys via the champion.json manifest.
+ * @param {{ topChampions: Array<{id:string, championPoints:number, championLevel:number}> }} summoner
  */
 export async function getTopChampions(summoner) {
-  await fakeDelay();
+  const raw = summoner.topChampions || [];
 
-  const seed = `${summoner.name}-${summoner.region}`;
+  if (!raw.length) {
+    throw new Error("No encontramos campeones con maestría para este invocador.");
+  }
 
-  // Deterministically shuffle the champion pool so the same summoner always
-  // gets the same "mains" — feels real across reloads.
-  const ordered = [...CHAMPIONS]
-    .map((champ, index) => ({
-      champ,
-      sortKey: seededInt(seed + champ.id + index, 100000),
-    }))
-    .sort((a, b) => a.sortKey - b.sortKey)
-    .map((entry) => entry.champ)
-    .slice(0, CONFIG.TOP_CHAMPIONS_COUNT);
-
-  // Attach descending, believable mastery numbers.
-  return ordered.map((champ, index) => {
-    const basePoints = 350000 - index * 42000 - seededInt(seed + champ.id, 20000);
+  return raw.slice(0, CONFIG.TOP_CHAMPIONS_COUNT).map((entry) => {
+    const champ = getChampionOrGeneric(entry.id);
     return {
       id: champ.id,
       name: champ.name,
       title: champ.title,
       role: champ.role,
       accent: champ.accent,
-      masteryLevel: Math.max(4, 7 - Math.floor(index / 2)),
-      masteryPoints: Math.max(12000, basePoints),
+      masteryLevel: entry.masteryLevel ?? entry.championLevel,
+      masteryPoints: entry.masteryPoints ?? entry.championPoints,
     };
   });
 }
 
 /* -------------------------------------------------------------------------- */
-/* 3. Chat                                                                    */
+/* 3. Chat (REAL — vía /api/chat)                                            */
 /* -------------------------------------------------------------------------- */
 
-/**
- * Generate a reply from a champion, in character.
- *
- * @param {string} championId - Data Dragon key of the active champion.
- * @param {Array<{ role: "user" | "champion", text: string }>} history
- * @param {string} message    - The latest user message.
- * @returns {Promise<{ text: string }>}
- *
- * TODO(real): POST to your LLM endpoint with a system prompt built from the
- * champion `persona`, plus the running `history`, e.g.:
- *
- *   await fetch("/api/chat", {
- *     method: "POST",
- *     body: JSON.stringify({ system: champion.persona, history, message }),
- *   });
- */
 export async function sendMessage(championId, history, message) {
-  await fakeDelay();
-
-  const champion = getChampionById(championId);
-  if (!champion) {
-    throw new Error("Campeón desconocido.");
+  const baseUrl = getServerUrl();
+  if (!baseUrl) {
+    throw new Error("El backend no está configurado (ServerAPI).");
   }
 
-  const text = mockReply(champion, message, history);
-  return { text };
+  const champion = getChampionOrGeneric(championId);
+
+  let response;
+  try {
+    response = await fetch(`${baseUrl}/api/chat`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        championId: champion.id,
+        championName: champion.name,
+        championTitle: champion.title,
+        persona: champion.persona,
+        history,
+        message,
+      }),
+    });
+  } catch {
+    throw new Error("No se pudo conectar con el servidor. Intenta de nuevo.");
+  }
+
+  if (!response.ok) {
+    let detail = `Error ${response.status}`;
+    try {
+      const body = await response.json();
+      if (body?.detail) detail = body.detail;
+    } catch {
+      /* sin JSON en la respuesta */
+    }
+    throw new Error(detail);
+  }
+
+  const data = await response.json();
+  return { text: data.text };
 }
 
-/**
- * Greeting shown automatically when a chat opens.
- * @param {string} championId
- * @returns {string}
- */
 export function getGreeting(championId) {
-  const champion = getChampionById(championId);
-  return champion ? sample(champion.greetings) : "…";
+  const champion = getChampionOrGeneric(championId);
+  return sample(champion.greetings);
 }
 
-/* -------------------------------------------------------------------------- */
-/* Mock reply engine (replace with a real LLM)                                */
-/* -------------------------------------------------------------------------- */
-
-/**
- * Tiny rule-based responder. It looks for a few intents (greeting, question,
- * thanks, farewell) and otherwise serves a flavorful in-character line. This
- * exists ONLY to make the demo feel alive — it is NOT meant to be smart.
- */
 function mockReply(champion, message, history) {
   const msg = message.toLowerCase();
-
   const has = (...words) => words.some((w) => msg.includes(w));
 
-  // Specific intents first, generic greeting last, so "hola, ¿quién eres?"
-  // resolves to the identity answer rather than just another greeting.
   if (has("quién eres", "quien eres", "qué eres", "que eres", "tu nombre")) {
     return `Soy ${champion.name}, ${champion.title}. ${sample(champion.lines)}`;
   }
@@ -205,48 +219,28 @@ function mockReply(champion, message, history) {
     return sample(champion.greetings);
   }
   if (has("gracias", "thx", "genial", "crack")) {
-    return sample([
-      "Cuando quieras.",
-      "Para eso estoy.",
-      ...champion.lines,
-    ]);
+    return sample(["Cuando quieras.", "Para eso estoy.", ...champion.lines]);
   }
   if (has("adios", "chau", "nos vemos", "bye")) {
-    return sample([
-      "Nos vemos en la Grieta.",
-      "Hasta la próxima partida.",
-    ]);
+    return sample(["Nos vemos en la Grieta.", "Hasta la próxima partida."]);
   }
   if (msg.includes("?") || has("cómo", "como", "por qué", "porque", "qué", "que")) {
-    // A question — answer with a fallback + a flavor line.
     return `${sample(champion.fallbacks)} ${sample(champion.lines)}`;
   }
-
-  // First couple of messages get more personality, later ones get variety.
   if (history.length < 2) {
     return sample(champion.lines);
   }
   return sample([...champion.lines, ...champion.fallbacks]);
 }
 
+/* -------------------------------------------------------------------------- */
+/* Health check                                                               */
+/* -------------------------------------------------------------------------- */
 
-function getServerUrl() {
-  const url = window.ServerAPI || '';
-  if (!url) {
-    console.warn('⚠️ ServerAPI no definida en window. Revisa que el placeholder se reemplace en el build.');
-  }
-  console.log(url)
-  return url;
-}
-getServerUrl()
-/**
- * Verifica el estado del backend llamando al endpoint /health.
- * @returns {Promise<{status: string}>}
- */
 export async function checkHealth() {
   const baseUrl = getServerUrl();
   if (!baseUrl) {
-    throw new Error('ServerAPI no configurada.');
+    throw new Error("ServerAPI no configurada.");
   }
   const response = await fetch(`${baseUrl}/health`);
   if (!response.ok) {
