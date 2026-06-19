@@ -8,9 +8,9 @@ A futuristic experience built with **vanilla HTML, CSS, and JavaScript**, featur
 
 ## ✨ Live Demo
 
-🔗 **Web App:** `YOUR_APP_URL`
+🔗 **Web App:** [chatwithyourmain.andresrosalez.dev](https://chatwithyourmain.andresrosalez.dev/)
 
-🔗 **Open Source Backend:** `YOUR_BACKEND_REPOSITORY_URL`
+🔗 **Backend Repository:** [Dev-Devant/chatwithyourmain_Backend](https://github.com/Dev-Devant/chatwithyourmain_Backend)
 
 ---
 
@@ -25,23 +25,22 @@ Search Summoner → Analyze Match History → Detect Main Champion → Build Pla
 3. **Select** — Choose your favorite champion or let the system detect your main automatically.
 4. **Chat** — Interact with an AI version of your champion, personalized with your gameplay habits.
 
-> 💡 This frontend currently uses a simulated backend. Any summoner name works for demonstration purposes. Use `notfound` to test the error state.
-
 ---
 
 ## 🚀 Engineering Highlights
 
 This project showcases experience with:
 
-* Third-party API integrations
-* Data analytics pipelines
-* AI-powered user experiences
+* Third-party API integrations (Riot Games API)
+* Data analytics pipelines (match history processing, player profiling)
+* AI-powered user experiences (OpenAI-backed in-character chat)
 * Prompt engineering
-* Backend architecture design
+* Backend architecture design (FastAPI, async I/O)
+* Persistent storage (PostgreSQL) and caching (Redis)
 * State management without frameworks
 * Rate limit handling
 * Secure API proxying
-* Production deployment
+* Production deployment (Railway)
 * Open source development
 
 ---
@@ -51,6 +50,11 @@ This project showcases experience with:
 ```text
 .
 ├── index.html
+├── es/ pt/ fr/ de/        # localized entry points
+├── legal/
+│   ├── privacy.html
+│   ├── cookies.html
+│   └── terms.html
 ├── assets/
 │   ├── css/
 │   │   └── styles.css
@@ -101,7 +105,7 @@ http://localhost:3000
 
 ---
 
-## 🔌 Connecting the Real Backend
+## 🔌 Connecting the Backend
 
 All backend interactions are isolated in:
 
@@ -109,18 +113,14 @@ All backend interactions are isolated in:
 assets/js/api.js
 ```
 
-Replace the simulated methods with real endpoints.
+This frontend talks to the live FastAPI backend (see the [backend repository](https://github.com/Dev-Devant/chatwithyourmain_Backend)), which handles:
 
-| Function            | Real Integration              |
-| ------------------- | ----------------------------- |
-| `searchSummoner()`  | Riot Account-V1 + Summoner-V4 |
-| `getTopChampions()` | Champion-Mastery-V4           |
-| `getMatchHistory()` | Match-V5                      |
-| `sendMessage()`     | Your LLM provider             |
+| Frontend call       | Backend endpoint     |
+| -------------------- | --------------------- |
+| `searchSummoner()`   | `GET/POST /api/summoner` |
+| `sendMessage()`      | `POST /api/chat`      |
 
-> ⚠️ Never expose your `RIOT_API_KEY` or LLM credentials in the browser.
-
-All requests must be proxied through your own backend.
+> ⚠️ No Riot API key or LLM credentials are ever exposed in the browser — all requests are proxied through the backend.
 
 Champion assets are loaded directly from Riot's Data Dragon CDN.
 
@@ -130,7 +130,7 @@ Champion assets are loaded directly from Riot's Data Dragon CDN.
 
 The analytics engine and Riot API integration live in a dedicated open source repository:
 
-🔗 `YOUR_BACKEND_REPOSITORY_URL`
+🔗 [Dev-Devant/chatwithyourmain_Backend](https://github.com/Dev-Devant/chatwithyourmain_Backend)
 
 The backend is responsible for:
 
@@ -140,41 +140,31 @@ The backend is responsible for:
 * Historical win rate analysis
 * Player profiling
 * AI context generation
+* PostgreSQL persistence for searched summoners
+* Redis caching for chat history
 * Caching and rate limit management
 
 ---
 
-## 💸 Support the Project
-
-Running AI-powered applications is not cheap. Tokens have the remarkable ability to disappear faster than LP after a losing streak.
+## ❤️ Support the Project
 
 If you enjoy the project, consider supporting its development:
 
-❤️ Patreon: `YOUR_PATREON_URL`
-
-☕ Cafecito: `YOUR_CAFECITO_URL`
+☕ Cafecito: [cafecito.app/andresrosalez](https://cafecito.app/andresrosalez)
 
 ---
 
-## 🤖 Need AI for Your Business?
+## 👤 Author
 
-Built by **Artem AI**.
+Made by **[Andres Rosalez](https://andresrosalez.dev/)** — AI Backend Developer.
 
-We create:
+💼 Portfolio: [andresrosalez.dev](https://andresrosalez.dev/)
 
-* AI chatbots
-* AI agents
-* WhatsApp automations
-* Business process automation
-* Custom AI integrations
+💬 LinkedIn: [linkedin.com/in/andres-rosalez](https://www.linkedin.com/in/andres-rosalez)
 
-📧 Email: `andeliros@yahoo.com.ar`
+📸 Instagram: [@andres_rosalez](https://www.instagram.com/andres_rosalez)
 
-🌐 Website: `YOUR_WEBSITE_URL`
-
-💼 Portfolio: `YOUR_PORTFOLIO_URL`
-
-💬 LinkedIn: `YOUR_LINKEDIN_URL`
+📧 Email: [andeliros@yahoo.com.ar](mailto:andeliros@yahoo.com.ar)
 
 ---
 
@@ -188,20 +178,10 @@ This project uses the Riot Games API in compliance with Riot Developer Policies.
 
 ---
 
-## ™️ Trademark Notice
-
-The source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
-
-The names, logos, branding, visual assets, and identity associated with **Artem AI** are not included under this license and may not be used without explicit written permission.
-
----
-
 ## 📄 License
 
-This project is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
+**All Rights Reserved.**
 
-Commercial use is permitted under the terms of the license.
-
-If you deploy a modified version of this software as a network service, you must make the corresponding source code available to users.
+This repository is public for portfolio and demonstration purposes only. No permission is granted to copy, modify, redistribute, or use this code — commercially or otherwise — without explicit written permission from the author.
 
 See the [`LICENSE`](./LICENSE) file for details.
