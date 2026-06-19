@@ -235,6 +235,7 @@ function getServerUrl() {
   if (!url) {
     console.warn('⚠️ ServerAPI no definida en window. Revisa que el placeholder se reemplace en el build.');
   }
+  console.log(url)
   return url;
 }
 
