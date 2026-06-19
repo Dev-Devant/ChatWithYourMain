@@ -7,19 +7,46 @@
   <meta name="theme-color" content="#05060a" />
 
   <!-- ============================ SEO ============================ -->
-  <title>Chat With Your Main — Talk to your main champion</title>
-  <meta name="description"
-    content="Search for your League of Legends summoner and start a conversation with your most played champion. Futuristic interface, glassmorphism and a chat with personality." />
-  <meta name="author" content="Your Name" />
-  <meta property="og:title" content="Chat With Your Main" />
-  <meta property="og:description" content="Search your summoner and chat with your League of Legends main." />
-  <meta property="og:type" content="website" />
+  <!-- ============================ SEO ============================ -->
+<title>Chat With Your Main | Talk to Your Main Champion</title>
 
-  <!-- =============== hreflang (SEO multi‑idioma) ================ -->
-  <link rel="alternate" hreflang="es" href="https://tudominio.com/es/" />
-  <link rel="alternate" hreflang="en" href="https://tudominio.com/" />
-  <link rel="canonical" href="https://tudominio.com/" />
+<meta
+  name="description"
+  content="Search for your League of Legends summoner and chat with your most played champion using AI."
+/>
 
+<meta name="author" content="Andres Rosalez" />
+<meta name="robots" content="index, follow" />
+<meta name="theme-color" content="#05060a" />
+
+<link rel="canonical" href="https://chatwithyourmain.andresrosalez.dev/" />
+
+<!-- =============== hreflang (multi-language SEO) ================ -->
+<link rel="alternate" hreflang="en" href="https://chatwithyourmain.andresrosalez.dev/" />
+<link rel="alternate" hreflang="es" href="https://chatwithyourmain.andresrosalez.dev/es/" />
+<link rel="alternate" hreflang="pt" href="https://chatwithyourmain.andresrosalez.dev/pt/" />
+<link rel="alternate" hreflang="fr" href="https://chatwithyourmain.andresrosalez.dev/fr/" />
+<link rel="alternate" hreflang="de" href="https://chatwithyourmain.andresrosalez.dev/de/" />
+<link rel="alternate" hreflang="x-default" href="https://chatwithyourmain.andresrosalez.dev/" />
+
+<!-- Open Graph -->
+<meta property="og:title" content="Chat With Your Main" />
+<meta
+  property="og:description"
+  content="Search for your League of Legends summoner and chat with your most played champion using AI."
+/>
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://chatwithyourmain.andresrosalez.dev/" />
+<meta property="og:image" content="https://chatwithyourmain.andresrosalez.dev/og-image.jpg" />
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Chat With Your Main" />
+<meta
+  name="twitter:description"
+  content="Search for your League of Legends summoner and chat with your most played champion using AI."
+/>
+<meta name="twitter:image" content="https://chatwithyourmain.andresrosalez.dev/og-image.jpg" />
   <!-- ===================== Icons (Font Awesome) ===================== -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -58,7 +85,7 @@
   <header class="site-header glass">
     <a class="brand" href="#top" aria-label="Chat With Your Main — home">
       <span class="brand__mark">
-        <img src="Icon.png">
+        <img src="Icon.png" alt="Chat With Your Main logo">
       </span>
       <span class="brand__text">
         Chat&nbsp;With&nbsp;Your&nbsp;<span class="brand__accent">Main</span>
@@ -67,14 +94,29 @@
 
     <nav class="site-nav" aria-label="Author links">
       <!-- Language switcher -->
-      <a class="site-nav__link" href="/es/" hreflang="es" aria-label="Versión en español">
-        <i class="fa-solid fa-language"></i><span>ES</span>
-      </a>
+      <div class="language-switcher">
+  <button
+    class="site-nav__link language-switcher__button"
+    type="button"
+    aria-label="Select language"
+  >
+    <i class="fa-solid fa-language"></i>
+    <span>Language</span>
+  </button>
+
+  <div class="language-switcher__menu">
+    <a href="/" hreflang="en" lang="en">🇺🇸 English</a>
+    <a href="/es/" hreflang="es" lang="es">🇪🇸 Español</a>
+    <a href="/pt/" hreflang="pt" lang="pt">🇧🇷 Português</a>
+    <a href="/fr/" hreflang="fr" lang="fr">🇫🇷 Français</a>
+    <a href="/de/" hreflang="de" lang="de">🇩🇪 Deutsch</a>
+  </div>
+</div>
       <!-- Personal branding -->
-      <a class="site-nav__link" href="https://andresrosalez.dev/" target="_blank" rel="noopener">
+      <a class="site-nav__link" href="https://andresrosalez.dev/" target="_blank" rel="noopener noreferrer">
         <i class="fa-solid fa-globe"></i><span>Portfolio</span>
       </a>
-      <a class="site-nav__link" href="https://www.linkedin.com/in/andres-rosalez" target="_blank" rel="noopener">
+      <a class="site-nav__link" href="https://www.linkedin.com/in/andres-rosalez" target="_blank" rel="noopener noreferrer">
         <i class="fa-brands fa-linkedin"></i><span>LinkedIn</span>
       </a>
       <a class="site-nav__link" href="mailto:andeliros@yahoo.com.ar">
@@ -89,12 +131,19 @@
     <!-- ===================== Left ad rail ===================== -->
     <aside class="ad-rail ad-rail--left" aria-label="Advertisement">
       <div class="ad-slot ad-slot--vertical" data-ad-format="vertical">
-        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-9816008441573456"
-          data-ad-slot="0000110000" data-ad-format="auto" data-full-width-responsive="true"></ins>
-       
-       <script>
-  (adsbygoogle = window.adsbygoogle || []).push({});
-</script>   <span class="ad-slot__label">Ad</span>
+       <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9816008441573456"
+     crossorigin="anonymous"></script>
+<!-- left-sidebar -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-9816008441573456"
+     data-ad-slot="6760257140"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+       <span class="ad-slot__label">Ad</span>
       </div>
     </aside>
 
@@ -114,7 +163,7 @@
             </h1>
             <p class="hero__subtitle">
               Search for your summoner, choose among your most played champions,
-              and start a conversation. No secrets: just you and your main.
+              and start a conversation. Just you and your main champion.
             </p>
 
             <form id="search-form" class="search glass" autocomplete="off" novalidate>
@@ -146,7 +195,7 @@
             <p id="search-message" class="search__feedback" role="status" aria-live="polite"></p>
 
             <ul class="hero__hints">
-              <li><i class="fa-solid fa-circle-info"></i> you can try Devant#DEV — the backend is online.</li>
+              <li><i class="fa-solid fa-circle-info"></i> You can try Devant#DEV — The backend is online.</li>
             </ul>
           </div>
         </div>
@@ -213,12 +262,18 @@
 
       <!-- In-content ad -->
       <div class="ad-slot ad-slot--horizontal" data-ad-format="horizontal" aria-label="Advertisement">
-        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-9816008441573456"
-          data-ad-slot="1111111111" data-ad-format="auto" data-full-width-responsive="true"></ins>
-        
-        <script>
-  (adsbygoogle = window.adsbygoogle || []).push({});
-</script>
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9816008441573456"
+     crossorigin="anonymous"></script>
+      <!-- main-content -->
+      <ins class="adsbygoogle"
+          style="display:block"
+          data-ad-client="ca-pub-9816008441573456"
+          data-ad-slot="6931492005"
+          data-ad-format="auto"
+          data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
   <span class="ad-slot__label">Ad</span>
       </div>
     </div>
@@ -226,12 +281,18 @@
     <!-- ===================== Right ad rail ===================== -->
     <aside class="ad-rail ad-rail--right" aria-label="Advertisement">
       <div class="ad-slot ad-slot--vertical" data-ad-format="vertical">
-        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-9816008441573456"
-          data-ad-slot="2222222222" data-ad-format="auto" data-full-width-responsive="true"></ins>
-        
-        <script>
-  (adsbygoogle = window.adsbygoogle || []).push({});
-</script>
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9816008441573456"
+              crossorigin="anonymous"></script>
+          <!-- right-sidebar -->
+          <ins class="adsbygoogle"
+              style="display:block"
+              data-ad-client="ca-pub-9816008441573456"
+              data-ad-slot="9286192603"
+              data-ad-format="auto"
+              data-full-width-responsive="true"></ins>
+          <script>
+              (adsbygoogle = window.adsbygoogle || []).push({});
+          </script>
   <span class="ad-slot__label">Ad</span>
       </div>
     </aside>
@@ -245,11 +306,11 @@
         Enjoy the project? Support it and follow me:
       </p>
       <div class="footer__buttons">
-        <a class="btn btn--coffee" href="https://cafecito.app/andresrosalez" target="_blank" rel="noopener">
+        <a class="btn btn--coffee" href="https://cafecito.app/andresrosalez" target="_blank" rel="noopener noreferrer">
           <i class="fa-solid fa-mug-hot"></i> Buy me a coffee
         </a>
-        <a class="btn btn--isnta" href="https://www.instagram.com/andres_rosalez" target="_blank" rel="noopener">
-          <i class="fa fa-instagram"></i> Followme!
+        <a class="btn btn--isnta" href="https://www.instagram.com/andres_rosalez" target="_blank" rel="noopener noreferrer">
+          <i class="fa fa-instagram"></i> Follow me
         </a>
       </div>
     </div>
@@ -263,12 +324,13 @@
       <p class="footer__legal">
         Not affiliated with Riot Games. League of Legends © Riot Games, Inc.
       </p>
-    </div>
-    <div class="footer__links">
+      <div class="footer__links">
   <a href="/legal/privacy.html">Privacy Policy</a>
   <a href="/legal/cookies.html">Cookies Policy</a>
   <a href="/legal/terms.html">Terms of Service</a>
 </div>
+    </div>
+   
   </footer>
 
   <script type="module" src="./js/app.js"></script>
