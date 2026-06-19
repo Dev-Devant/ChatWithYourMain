@@ -106,11 +106,13 @@ async function handleChatSubmit(event) {
   state.busy = true;
   ui.setTyping(true);
 
-  try {
+try {
     const { text } = await api.sendMessage(
       state.activeChampionId,
       state.history,
-      message
+      message,
+      state.summoner?.puuid,
+      state.summoner?.region
     );
     ui.setTyping(false);
     ui.appendMessage("champion", text, champion);

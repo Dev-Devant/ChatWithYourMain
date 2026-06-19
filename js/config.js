@@ -23,11 +23,11 @@ export const CONFIG = Object.freeze({
 
   /** Author / monetization links. Mirrored in index.html for SEO crawlers. */
   LINKS: Object.freeze({
-    portfolio: "https://your-portfolio.dev",
-    linkedin: "https://www.linkedin.com/in/your-handle",
-    email: "mailto:you@email.com",
-    patreon: "https://www.patreon.com/your-handle",
-    coffee: "https://cafecito.app/your-handle",
+    portfolio: "https://andresrosalez.dev",
+    linkedin: "https://www.linkedin.com/in/andres-rosalez",
+    email: "mailto:andeliros@yahoo.com.ar",
+    coffee: "https://cafecito.app/andresrosalez",
+    instagram: "https://www.instagram.com/andres_rosalez"
   }),
 });
 

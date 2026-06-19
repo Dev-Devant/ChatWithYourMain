@@ -113,18 +113,16 @@ export async function searchSummoner(riotId, region) {
   const data = await response.json();
 
   return {
-    name: data.name,
-    tagLine: data.tagLine,
-    region: data.region || region,
-    level: data.level,
-    iconId: data.iconId,
-    puuid: data.puuid,
-    // El backend real no devuelve rank/LP (eso era simulado). Dejamos
-    // placeholders neutros para no romper renderSummonerCard().
-    rank: "—",
-    lp: 0,
-    topChampions: data.topChampions || [],
-  };
+      name: data.name,
+      tagLine: data.tagLine,
+      region: data.region || region,
+      level: data.level,
+      iconId: data.iconId,
+      puuid: data.puuid,
+      rank: "—",
+      lp: 0,
+      topChampions: data.topChampions || [],
+    };
 }
 
 /* -------------------------------------------------------------------------- */
@@ -162,7 +160,7 @@ export async function getTopChampions(summoner) {
 /* 3. Chat (REAL — vía /api/chat)                                            */
 /* -------------------------------------------------------------------------- */
 
-export async function sendMessage(championId, history, message) {
+export async function sendMessage(championId, history, message, puuid, region) {
   const baseUrl = getServerUrl();
   if (!baseUrl) {
     throw new Error("El backend no está configurado (ServerAPI).");
@@ -182,6 +180,8 @@ export async function sendMessage(championId, history, message) {
         persona: champion.persona,
         history,
         message,
+        puuid,
+        region,
       }),
     });
   } catch {
