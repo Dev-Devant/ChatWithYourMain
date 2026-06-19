@@ -238,7 +238,7 @@ function getServerUrl() {
   console.log(url)
   return url;
 }
-
+getServerUrl()
 /**
  * Verifica el estado del backend llamando al endpoint /health.
  * @returns {Promise<{status: string}>}
