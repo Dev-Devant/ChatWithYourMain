@@ -2,26 +2,16 @@
  * api.js — REAL BACKEND (Riot via FastAPI)
  * ==========================================================================
  * Ahora maneja el token JWT devuelto por /api/summoner y lo incluye
- * en las llamadas a /api/chat y /api/chat/history.
+ * en las llamadas a /api/chat.
  * ==========================================================================
  */
 
 import { CONFIG } from "./config.js";
-import { CHAMPIONS, getChampionById } from "./data/champions.js";
+import { getChampionById } from "./data/champions.js";
 
 /* -------------------------------------------------------------------------- */
-/* Internal helpers                                                           */
+/* Helpers                                                                   */
 /* -------------------------------------------------------------------------- */
-
-function fakeDelay() {
-  const { min, max } = CONFIG.FAKE_LATENCY;
-  const ms = Math.round(min + Math.random() * (max - min));
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-function sample(arr) {
-  return arr[Math.floor(Math.random() * arr.length)];
-}
 
 function getServerUrl() {
   const url = "https://chatwithyourmainbackend-production.up.railway.app";
@@ -32,9 +22,7 @@ function getServerUrl() {
 }
 
 /**
- * Devuelve la persona de champions.js si existe, o una genérica si el
- * campeón con más maestría del invocador no está en nuestra lista de 9.
- * @param {string} id - Data Dragon key, ej "Garen".
+ * Devuelve la persona de champions.js si existe, o una genérica si no.
  */
 export function getChampionOrGeneric(id) {
   const champ = getChampionById(id);
@@ -61,16 +49,9 @@ export function getChampionOrGeneric(id) {
 }
 
 /* -------------------------------------------------------------------------- */
-/* 1. Summoner lookup (REAL) — ahora devuelve el token                       */
+/* 1. Summoner lookup — devuelve el token                                     */
 /* -------------------------------------------------------------------------- */
 
-/**
- * Busca un Riot ID completo ("Nombre#TAG") contra tu backend.
- * Devuelve el summoner + el token JWT necesario para las siguientes llamadas.
- *
- * @param {string} riotId - ej "Hide on bush#KR1"
- * @param {string} region - LAN, LAS, NA, EUW, EUNE, KR, BR
- */
 export async function searchSummoner(riotId, region) {
   const clean = riotId.trim();
 
@@ -103,14 +84,14 @@ export async function searchSummoner(riotId, region) {
       const body = await response.json();
       if (body?.detail) detail = body.detail;
     } catch {
-      /* respuesta sin JSON, nos quedamos con el status */
+      /* respuesta sin JSON */
     }
     throw new Error(detail);
   }
 
   const data = await response.json();
+  console.log("[api] Respuesta de /api/summoner:", data); // <-- VER EL TOKEN EN CONSOLA
 
-  // La respuesta del backend ahora incluye un campo "token"
   return {
     name: data.name,
     tagLine: data.tagLine,
@@ -118,7 +99,7 @@ export async function searchSummoner(riotId, region) {
     level: data.level,
     iconId: data.iconId,
     puuid: data.puuid,
-    token: data.token,      // <--- NUEVO: token JWT
+    token: data.token,        // <--- GUARDAMOS EL TOKEN
     rank: "—",
     lp: 0,
     topChampions: data.topChampions || [],
@@ -126,15 +107,9 @@ export async function searchSummoner(riotId, region) {
 }
 
 /* -------------------------------------------------------------------------- */
-/* 2. Champion mastery (REAL, ya viene en searchSummoner)                    */
+/* 2. Champion mastery (enriquece con datos locales)                          */
 /* -------------------------------------------------------------------------- */
 
-/**
- * No vuelve a llamar al backend: toma el `topChampions` que ya trajo
- * searchSummoner() y lo enriquece con la persona local (o una genérica).
- *
- * @param {{ topChampions: Array<{id:string, championPoints:number, championLevel:number}> }} summoner
- */
 export async function getTopChampions(summoner) {
   const raw = summoner.topChampions || [];
 
@@ -157,10 +132,12 @@ export async function getTopChampions(summoner) {
 }
 
 /* -------------------------------------------------------------------------- */
-/* 3. Chat (REAL — vía /api/chat) con token                                  */
+/* 3. Chat — envía el token en el header Authorization                        */
 /* -------------------------------------------------------------------------- */
 
 export async function sendMessage(championId, history, message, puuid, region, token) {
+  console.log("[api] Token enviado en sendMessage:", token); // <-- VER QUE LLEGA
+
   const baseUrl = getServerUrl();
   if (!baseUrl) {
     throw new Error("El backend no está configurado (ServerAPI).");
@@ -174,8 +151,7 @@ export async function sendMessage(championId, history, message, puuid, region, t
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        // <--- ENVIAR EL TOKEN EN EL HEADER
-        Authorization: `Bearer ${token}`,
+        "Authorization": `Bearer ${token}`,   // <--- ENVIAR TOKEN
       },
       body: JSON.stringify({
         championId: champion.id,
@@ -207,38 +183,18 @@ export async function sendMessage(championId, history, message, puuid, region, t
   return { text: data.text };
 }
 
+/* -------------------------------------------------------------------------- */
+/* 4. Saludar (usa el primer saludo del campeón)                              */
+/* -------------------------------------------------------------------------- */
+
 export function getGreeting(championId) {
   const champion = getChampionOrGeneric(championId);
-  return sample(champion.greetings);
-}
-
-function mockReply(champion, message, history) {
-  const msg = message.toLowerCase();
-  const has = (...words) => words.some((w) => msg.includes(w));
-
-  if (has("quién eres", "quien eres", "qué eres", "que eres", "tu nombre")) {
-    return `Soy ${champion.name}, ${champion.title}. ${sample(champion.lines)}`;
-  }
-  if (has("hola", "buenas", "hey", "saludos")) {
-    return sample(champion.greetings);
-  }
-  if (has("gracias", "thx", "genial", "crack")) {
-    return sample(["Cuando quieras.", "Para eso estoy.", ...champion.lines]);
-  }
-  if (has("adios", "chau", "nos vemos", "bye")) {
-    return sample(["Nos vemos en la Grieta.", "Hasta la próxima partida."]);
-  }
-  if (msg.includes("?") || has("cómo", "como", "por qué", "porque", "qué", "que")) {
-    return `${sample(champion.fallbacks)} ${sample(champion.lines)}`;
-  }
-  if (history.length < 2) {
-    return sample(champion.lines);
-  }
-  return sample([...champion.lines, ...champion.fallbacks]);
+  const greetings = champion.greetings || ["¡Hola! ¿Cómo estás?"];
+  return greetings[Math.floor(Math.random() * greetings.length)];
 }
 
 /* -------------------------------------------------------------------------- */
-/* Health check                                                               */
+/* Health check (opcional)                                                    */
 /* -------------------------------------------------------------------------- */
 
 export async function checkHealth() {

@@ -13,7 +13,7 @@ import * as ui from "./ui.js";
 /* -------------------------------------------------------------------------- */
 
 const state = {
-  summoner: null,
+  summoner: null,          // incluye token
   activeChampionId: null,
   history: [],
   busy: false,
@@ -44,7 +44,7 @@ async function handleSearch(event) {
     const summoner = await api.searchSummoner(riotId, region);
     const champions = await api.getTopChampions(summoner);
 
-    state.summoner = summoner;  // guardamos todo, incluido token
+    state.summoner = summoner;   // guardamos todo (incluido token)
     ui.setSearchMessage("", "");
 
     ui.renderSummonerCard(summoner);
@@ -84,7 +84,7 @@ function handleChampionSelect(championId) {
 }
 
 /* -------------------------------------------------------------------------- */
-/* Step 3 — Chat                                                              */
+/* Step 3 — Chat (envía el token)                                            */
 /* -------------------------------------------------------------------------- */
 
 async function handleChatSubmit(event) {
@@ -117,8 +117,9 @@ async function handleChatSubmit(event) {
       message,
       state.summoner?.puuid,
       state.summoner?.region,
-      token  // <--- PASAMOS EL TOKEN
+      token   // <--- PASAMOS EL TOKEN
     );
+
     ui.setTyping(false);
     ui.appendMessage("champion", text, champion);
     state.history.push({ role: "champion", text });
@@ -165,8 +166,7 @@ function init() {
 
   ui.$("#summoner-input").focus();
 
-  // eslint-disable-next-line no-console
-  console.log("[v0] Chat With Your Main — backend real conectado ✦");
+  console.log("[app] Chat With Your Main — backend real conectado ✦");
 }
 
 if (document.readyState === "loading") {
@@ -175,9 +175,9 @@ if (document.readyState === "loading") {
   init();
 }
 
-// ============================================================
-// Efecto de salpicadura de pintura fluorescente al hacer clic
-// ============================================================
+/* -------------------------------------------------------------------------- */
+/* Efecto de salpicadura de pintura (sin cambios)                             */
+/* -------------------------------------------------------------------------- */
 document.addEventListener("click", function (event) {
   const particleCount = 16;
   const colors = ["#36d1dc", "#ff3fa4", "#7c5cff", "#ffd84d", "#2fe089"];
