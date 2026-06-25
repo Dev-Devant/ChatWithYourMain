@@ -1,10 +1,8 @@
 /**
- * api.js — REAL BACKEND (Riot via FastAPI) + chat simulado
+ * api.js — REAL BACKEND (Riot via FastAPI)
  * ==========================================================================
- * searchSummoner()   -> POST {baseUrl}/api/summoner  (Riot real, vía tu backend)
- * getTopChampions()  -> usa el array topChampions que ya viene en la respuesta
- *                        de /api/summoner, enriquecido con persona local.
- * sendMessage()      -> sigue simulado hasta que conectes tu endpoint de IA.
+ * Ahora maneja el token JWT devuelto por /api/summoner y lo incluye
+ * en las llamadas a /api/chat y /api/chat/history.
  * ==========================================================================
  */
 
@@ -63,12 +61,12 @@ export function getChampionOrGeneric(id) {
 }
 
 /* -------------------------------------------------------------------------- */
-/* 1. Summoner lookup (REAL)                                                  */
+/* 1. Summoner lookup (REAL) — ahora devuelve el token                       */
 /* -------------------------------------------------------------------------- */
 
 /**
- * Busca un Riot ID completo ("Nombre#TAG") contra tu backend, que a su vez
- * llama Account-V1 + Summoner-V4 + Champion-Mastery-V4.
+ * Busca un Riot ID completo ("Nombre#TAG") contra tu backend.
+ * Devuelve el summoner + el token JWT necesario para las siguientes llamadas.
  *
  * @param {string} riotId - ej "Hide on bush#KR1"
  * @param {string} region - LAN, LAS, NA, EUW, EUNE, KR, BR
@@ -112,17 +110,19 @@ export async function searchSummoner(riotId, region) {
 
   const data = await response.json();
 
+  // La respuesta del backend ahora incluye un campo "token"
   return {
-      name: data.name,
-      tagLine: data.tagLine,
-      region: data.region || region,
-      level: data.level,
-      iconId: data.iconId,
-      puuid: data.puuid,
-      rank: "—",
-      lp: 0,
-      topChampions: data.topChampions || [],
-    };
+    name: data.name,
+    tagLine: data.tagLine,
+    region: data.region || region,
+    level: data.level,
+    iconId: data.iconId,
+    puuid: data.puuid,
+    token: data.token,      // <--- NUEVO: token JWT
+    rank: "—",
+    lp: 0,
+    topChampions: data.topChampions || [],
+  };
 }
 
 /* -------------------------------------------------------------------------- */
@@ -157,10 +157,10 @@ export async function getTopChampions(summoner) {
 }
 
 /* -------------------------------------------------------------------------- */
-/* 3. Chat (REAL — vía /api/chat)                                            */
+/* 3. Chat (REAL — vía /api/chat) con token                                  */
 /* -------------------------------------------------------------------------- */
 
-export async function sendMessage(championId, history, message, puuid, region) {
+export async function sendMessage(championId, history, message, puuid, region, token) {
   const baseUrl = getServerUrl();
   if (!baseUrl) {
     throw new Error("El backend no está configurado (ServerAPI).");
@@ -172,7 +172,11 @@ export async function sendMessage(championId, history, message, puuid, region) {
   try {
     response = await fetch(`${baseUrl}/api/chat`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        // <--- ENVIAR EL TOKEN EN EL HEADER
+        Authorization: `Bearer ${token}`,
+      },
       body: JSON.stringify({
         championId: champion.id,
         championName: champion.name,

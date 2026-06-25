@@ -1,7 +1,7 @@
 /**
  * app.js — application controller
  * ==========================================================================
- * Flow:  search (Riot ID real)  ->  champion select  ->  chat (simulado)
+ * Flow:  search (Riot ID real)  ->  champion select  ->  chat (con token)
  * ==========================================================================
  */
 
@@ -40,11 +40,11 @@ async function handleSearch(event) {
   ui.setSearchMessage("Conectando con la Grieta…", "info");
 
   try {
-    // searchSummoner ya trae el invocador + su top de campeones reales.
+    // searchSummoner ahora devuelve el token
     const summoner = await api.searchSummoner(riotId, region);
     const champions = await api.getTopChampions(summoner);
 
-    state.summoner = summoner;
+    state.summoner = summoner;  // guardamos todo, incluido token
     ui.setSearchMessage("", "");
 
     ui.renderSummonerCard(summoner);
@@ -63,8 +63,6 @@ async function handleSearch(event) {
 /* -------------------------------------------------------------------------- */
 
 function handleChampionSelect(championId) {
-  // getChampionOrGeneric cubre tanto los 9 campeones con persona escrita
-  // como cualquier otro que haya salido como "main" real del invocador.
   const champion = api.getChampionOrGeneric(championId);
   if (!champion) return;
 
@@ -106,13 +104,20 @@ async function handleChatSubmit(event) {
   state.busy = true;
   ui.setTyping(true);
 
-try {
+  try {
+    // Obtenemos el token del summoner guardado
+    const token = state.summoner?.token;
+    if (!token) {
+      throw new Error("No hay token de autenticación. Vuelve a buscar al invocador.");
+    }
+
     const { text } = await api.sendMessage(
       state.activeChampionId,
       state.history,
       message,
       state.summoner?.puuid,
-      state.summoner?.region
+      state.summoner?.region,
+      token  // <--- PASAMOS EL TOKEN
     );
     ui.setTyping(false);
     ui.appendMessage("champion", text, champion);
@@ -172,7 +177,6 @@ if (document.readyState === "loading") {
 
 // ============================================================
 // Efecto de salpicadura de pintura fluorescente al hacer clic
-// (sin cambios)
 // ============================================================
 document.addEventListener("click", function (event) {
   const particleCount = 16;
