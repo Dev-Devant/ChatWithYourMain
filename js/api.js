@@ -90,7 +90,6 @@ export async function searchSummoner(riotId, region) {
   }
 
   const data = await response.json();
-  console.log("[api] Respuesta de /api/summoner:", data); // <-- VER EL TOKEN EN CONSOLA
 
   return {
     name: data.name,
@@ -136,7 +135,6 @@ export async function getTopChampions(summoner) {
 /* -------------------------------------------------------------------------- */
 
 export async function sendMessage(championId, history, message, puuid, region, token) {
-  console.log("[api] Token enviado en sendMessage:", token); // <-- VER QUE LLEGA
 
   const baseUrl = getServerUrl();
   if (!baseUrl) {

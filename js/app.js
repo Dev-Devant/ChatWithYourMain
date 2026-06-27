@@ -166,7 +166,6 @@ function init() {
 
   ui.$("#summoner-input").focus();
 
-  console.log("[app] Chat With Your Main — backend real conectado ✦");
 }
 
 if (document.readyState === "loading") {
